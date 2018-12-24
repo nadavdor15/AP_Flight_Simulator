@@ -12,7 +12,6 @@ private:
 	map<string, Expression*>* _expressionsMap;
 	map<string, double>* _symbolTable;
 	map<string, vector<string>>* _bindTable;
-	Evaluator* _evaluator;
 
 public:
 	Interpreter();

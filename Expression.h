@@ -9,6 +9,8 @@ using namespace std;
 class Expression {
 public:
 	virtual double calculate(vector<string>& arguments, int index) = 0;
+
+	virtual ~Expression() {}
 };
 
 #endif 

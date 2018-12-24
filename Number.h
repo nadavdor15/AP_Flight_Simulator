@@ -1,3 +1,6 @@
+#ifndef NUMBER_H
+#define NUMBER_H
+
 #include "Expression.h"
 
 using namespace std;
@@ -14,3 +17,5 @@ public:
         return _value;
     }
 };
+
+#endif	//	!NUMBER_H

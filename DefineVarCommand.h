@@ -3,12 +3,10 @@
 #include "StringHelper.h"
 #include <iostream>
 #include <math.h>
-#include <map>
 
 using namespace std;
 
 class DefineVarCommand : public Command {
-	map<string, double>* _symbolTable;
 	map<string, Expression*>* _savedNames;
 
 public:
@@ -18,7 +16,7 @@ public:
 		_argumentsAmount = 1;
 	}
 
-	virtual int doCommand(vector<string>& arguments, int index) {
+	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		if ((arguments.size() - 1) < _argumentsAmount)
 			throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
 		if (_symbolTable->find(arguments[++index]) != _symbolTable->end())
@@ -35,7 +33,7 @@ public:
 
 private:
 	void checkValidity(string varName) {
-		for (int i = 0; i < varName.length(); i++)
+		for (unsigned int i = 0; i < varName.length(); i++)
 			if ((varName[i] < 'a' || varName[i] > 'z') && varName[i] != '_' &&
 				(varName[i] < 'A' || varName[i] > 'Z') && ('0' > varName[i] || varName[i] > '9'))
 				throw "The name " + varName + " contains a char that is not a-z OR A-Z OR 1-9 OR _";

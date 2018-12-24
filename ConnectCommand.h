@@ -22,7 +22,6 @@ class ConnectCommand : public Command {
 	void startClient(const char* dst_addr) {
 		close(_client_fd);
 		struct sockaddr_in address;
-    	socklen_t addrlen = sizeof(address);
 
 		if ((_client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			throw "Could not open client socket";
@@ -42,7 +41,7 @@ public:
 		_client_fd = -1;
 	}
 
-	virtual int doCommand(vector<string>& arguments, int index) {
+	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		if ((arguments.size() - 1) < _argumentsAmount)
 			throw "Arguments amount is lower than " + to_string(_argumentsAmount);
 		const char* ip_address = arguments[++index].c_str();

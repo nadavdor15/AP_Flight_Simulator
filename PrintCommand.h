@@ -2,12 +2,10 @@
 #include "StringHelper.h"
 #include <iostream>
 #include <algorithm>
-#include <map>
 
 using namespace std;
 
 class PrintCommand : public Command {
-	map<string, double>* _symbolTable;
 
 public:
 	PrintCommand(map<string,double>* symbolTable) {
@@ -15,7 +13,7 @@ public:
 		_argumentsAmount = 1;
 	}
 
-	virtual int doCommand(vector<string>& arguments, int index) {
+	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		if ((arguments.size() - 1) < _argumentsAmount)
 			throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
 		do {
@@ -31,6 +29,6 @@ public:
 				cout << _symbolTable->at(arg);
 			}
 		} while ((++index + 1) < arguments.size() && arguments[index] == "+");
-		return arguments.size();
+		return index;
 	}
 };

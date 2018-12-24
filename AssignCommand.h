@@ -1,13 +1,11 @@
 #include "Command.h"
 #include "StringHelper.h"
+#include "Evaluator.h"
 #include <iostream>
-#include <map>
-#define OPERATORS "-+/*()"
 
 using namespace std;
 
 class AssignCommand : public Command {
-	map<string, double>* _symbolTable;
 	map<string, vector<string>>* _bindTable;
 
 public:
@@ -17,7 +15,7 @@ public:
 		_argumentsAmount = 2;
 	}
 
-	virtual int doCommand(vector<string>& arguments, int index) {
+	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		if ((arguments.size() - 1) < _argumentsAmount)
 			throw "Arguments amount is lower than " + to_string(_argumentsAmount);
 		if (_symbolTable->find(arguments[index - 1]) == _symbolTable->end())
@@ -34,21 +32,9 @@ public:
 				return index + 3;
 			}
 		}
-		// string operators = string(OPERATORS);
-		// for (int i = index + 1; i < arguments.size(); i++) {
-		// 	try {
-		// 		stod(arguments[i]);
-		// 	} catch (...) {
-		// 		if (operators.find(arguments[i]) != string::npos)
-		// 			continue;
-		// 		if (_symbolTable->find(arguments[i]) == _symbolTable->end())
-		// 			throw "The variable " + arguments[i] + " is not defined";
-		// 		arguments[i] = to_string(_symbolTable->operator[](arguments[i]));
-		// 	}
-		// }
-		// for (string s : arguments)
-		// 	cout << "'" << s << "' ";
-		// cout << endl;
-		return arguments.size();
+		int varIndex = index - 1;
+		double value = Evaluator::evaluate(arguments, &(++index), _symbolTable);
+		_symbolTable->operator[](arguments[varIndex]) = value;
+		return index;
 	}
 };

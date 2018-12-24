@@ -12,7 +12,6 @@
 #include <string.h>
 #include <thread>
 #include <chrono>
-#include <map>
 #define MAX_PORT_SIZE 65536
 #define MIN_PORT_SIZE 1
 #define MIN_SPEED 1
@@ -22,7 +21,6 @@ using namespace std;
 
 class DataReaderServer : public Command {
 	map<string, vector<string>>* _bindTable;
-	map<string,double>* _symbolTable;
 public:
 	DataReaderServer() {
 
@@ -35,11 +33,11 @@ public:
 		_argumentsAmount = 2;
 	}
 
-	virtual int doCommand(vector<string>& arguments, int index) {
+	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		if ((arguments.size() - 1) < _argumentsAmount)
 			throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
 		int port = stoi(arguments[++index]);
-		int speed = stoi(arguments[++index]);
+		unsigned int speed = stoi(arguments[++index]);
 		if (port < MIN_PORT_SIZE || port > MAX_PORT_SIZE)
 			throw "First argument must be in range of 1-65536";
 		if (speed < MIN_SPEED)
@@ -51,7 +49,7 @@ public:
 
 private:
 	static void startServer(int port, 
-							int speed,
+							unsigned int speed,
 							map<string,double>* symbolTable, map<string,
 							vector<string>>* bindTable) {
 		int server_fd;
@@ -76,7 +74,7 @@ private:
 		char buffer[1024];
 		while (true) {
 			auto start = chrono::steady_clock::now();
-	      	int i = 0;
+	      	unsigned int i = 0;
 			string receivedData = "";
 			while (i < speed) {
 				bzero(buffer, 1024);
@@ -107,7 +105,7 @@ private:
 						   map<string,double>* symbolTable,
 						   map<string, vector<string>>* bindTable,
 						   vector<string>& names) {
-		for (int i = 0; i < names.size(); i++) {
+		for (unsigned int i = 0; i < names.size(); i++) {
 			vector<string> binds = bindTable->operator[](names[i]);
 			for (string bind : binds)
 				symbolTable->at(bind) = values[i];

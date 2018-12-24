@@ -4,20 +4,17 @@
 #include <iostream>
 #include "Expression.h"
 #include "Command.h"
-#include "Evaluator.h"
 
 using namespace std;
 
 class CommandExpression : public Expression {
 	Command* _command;
-	Evaluator* _evaluator;
 
 public:
 	CommandExpression() {}
 
-	CommandExpression(Command* command, Evaluator* evaluator) {
+	CommandExpression(Command* command) {
 		_command = command;
-		_evaluator = evaluator;
 	}
 
 	virtual double calculate(vector<string>& arguments, int index) {

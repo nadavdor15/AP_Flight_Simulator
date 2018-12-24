@@ -1,3 +1,6 @@
+#ifndef BINARY_EXPRESSION_H
+#define BINARY_EXPRESSION_H
+
 #include "Expression.h"
 
 using namespace std;
@@ -13,3 +16,5 @@ public:
                      _right_expression(right_expression) {}
     virtual double calculate(vector<string>& arguments, int index) = 0;
 };
+
+#endif	//	!BINARY_EXPRESSION_H

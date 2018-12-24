@@ -13,7 +13,7 @@ class StringHelper {
 public:
 	static void addSpaces(string& line) {
 	  	string needSpaces = string(SHOULD_GET_SPACES);
-		for (int i = 0; (i + 1) < line.length(); i++) {
+		for (unsigned int i = 0; (i + 1) < line.length(); i++) {
 			if (line[i] == '\"')
 				while (line[++i] != '\"') {}
 			if (needSpaces.find(string(",") + line[i] + string(",")) != string::npos) {
@@ -33,7 +33,7 @@ public:
 
 	static vector<string> split(string line, const char* delim) {
 		vector<string> commands;
-		int firstIndex;
+		unsigned int firstIndex;
 		while ((firstIndex = line.find_first_of(delim)) < line.length()) {
 			string word = line.substr(0, firstIndex);
 			if (word.length())
@@ -46,7 +46,7 @@ public:
 	}
 
 	static string remove_bkslsh(string line) {
-		for (int i = 0; i < line.length(); i++)
+		for (unsigned int i = 0; i < line.length(); i++)
 			if (line[i] == '\\' && line[i+1] == '\\')
 				line.erase(line.begin() + i + 1);
 		return line;
@@ -54,7 +54,7 @@ public:
 	
 	// static string getArgumentNoSpaces(vector<string>& arguments, int index) {
 	// 	string argument = "";
-	// 	for (int i = index; i < arguments.size(); i++)
+	// 	for (unsigned int i = index; i < arguments.size(); i++)
 	// 		argument += argument[i];
 	// 	argument.erase(remove_if(argument.begin(), argument.end(), ::isspace), argument.end());
 	// 	return argument;

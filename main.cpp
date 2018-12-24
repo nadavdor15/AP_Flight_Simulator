@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 			interpreter.parser(line, 0);
 		}
 	}
-	while (getline(cin, inputStr)) {
+	while (getline(cin, inputStr) && inputStr.compare("exit") != 0) {
 		if (Interpreter::isScriptFile(inputStr)) {
 			ifstream script(inputStr);
 			while (getline(script, inputStr)) {
