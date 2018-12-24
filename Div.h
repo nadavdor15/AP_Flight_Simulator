@@ -9,7 +9,10 @@ public:
           BinaryExpression(right_expression, left_expression) {}
 
     double calculate(vector<string>& arguments, int index) {
-        return _right_expression.calculate(arguments, index) /
-               _left_expression.calculate(arguments, index);
+    	double right = _right_expression.calculate(arguments, index);
+    	if (right == 0)
+    		throw "Cannot divide by zero!";
+        return _left_expression.calculate(arguments, index) /
+               right;
     }
 };

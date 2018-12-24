@@ -13,7 +13,11 @@
 using namespace std;
 
 Interpreter::Interpreter() {
-	setCommandsMap();
+	_expressionsMap = new map<string, Expression*>();
+	_symbolTable = new map<string, double>();
+	_bindTable = new map<string, vector<string>>();
+	_evaluator = new Evaluator(_symbolTable);
+	setExpressionsMap();
 }
 
 vector<string> Interpreter::lexer(string line) {
@@ -27,9 +31,9 @@ void Interpreter::parser(vector<string> line, int index) {
 		StringHelper::addSpaces(argument);
 		line = StringHelper::split(argument, " ");
 		try {
-			if (_symbolTable.find(line[i]) != _symbolTable.end())
+			if (_symbolTable->find(line[i]) != _symbolTable->end())
 				continue;
-			expression = _expressions_map.at(line[i]);
+			expression = _expressionsMap->at(line[i]);
 		} catch (...) {
 			cout << "Could not resolve '" << line[i] << "'" << endl;
 			break;
@@ -46,12 +50,12 @@ void Interpreter::parser(vector<string> line, int index) {
 	}
 }
 
-void Interpreter::setCommandsMap() {
-	_expressions_map["openDataServer"] = new CommandExpression(new OpenServerCommand(&_symbolTable, &_bindTable));
-	_expressions_map["connect"] = new CommandExpression(new ConnectCommand(&_symbolTable));
-	_expressions_map["var"] = new CommandExpression(new DefineVarCommand(&_symbolTable, &_expressions_map));
-	_expressions_map["="] = new CommandExpression(new AssignCommand(&_symbolTable, &_bindTable));
-	_expressions_map["print"] = new CommandExpression(new PrintCommand(&_symbolTable));
+void Interpreter::setExpressionsMap() {
+	_expressionsMap->operator[]("openDataServer") = new CommandExpression(new OpenServerCommand(_symbolTable, _bindTable), _evaluator);
+	_expressionsMap->operator[]("connect") = new CommandExpression(new ConnectCommand(_symbolTable), _evaluator);
+	_expressionsMap->operator[]("var") = new CommandExpression(new DefineVarCommand(_symbolTable, _expressionsMap), _evaluator);
+	_expressionsMap->operator[]("=") = new CommandExpression(new AssignCommand(_symbolTable, _bindTable), _evaluator);
+	_expressionsMap->operator[]("print") = new CommandExpression(new PrintCommand(_symbolTable), _evaluator);
 }
 
 bool Interpreter::isScriptFile(string& line) {
@@ -69,6 +73,10 @@ bool Interpreter::isScriptFile(string& line) {
 }
 
 Interpreter::~Interpreter() {
-	for (auto it = _expressions_map.begin(); it != _expressions_map.end(); it++)
+	for (auto it = _expressionsMap->begin(); it != _expressionsMap->end(); it++)
 		delete it->second;
+	delete _expressionsMap;
+	delete _symbolTable;
+	delete _bindTable;
+	delete _evaluator;
 }

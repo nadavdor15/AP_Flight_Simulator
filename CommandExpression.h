@@ -1,20 +1,23 @@
 #ifndef COMMAND_EXPRESSION_H
 #define COMMAND_EXPRESSION_H
 
-#include "Expression.h"
 #include <iostream>
+#include "Expression.h"
 #include "Command.h"
+#include "Evaluator.h"
 
 using namespace std;
 
 class CommandExpression : public Expression {
 	Command* _command;
+	Evaluator* _evaluator;
 
 public:
 	CommandExpression() {}
 
-	CommandExpression(Command* command) {
+	CommandExpression(Command* command, Evaluator* evaluator) {
 		_command = command;
+		_evaluator = evaluator;
 	}
 
 	virtual double calculate(vector<string>& arguments, int index) {

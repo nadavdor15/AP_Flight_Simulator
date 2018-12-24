@@ -3,14 +3,16 @@
 
 #include <map>
 #include "Expression.h"
+#include "Evaluator.h"
 
 using namespace std;
 
 class Interpreter {
 private:
-	map<string, Expression*> _expressions_map;
-	map<string, double> _symbolTable;
-	map<string, vector<string>> _bindTable;
+	map<string, Expression*>* _expressionsMap;
+	map<string, double>* _symbolTable;
+	map<string, vector<string>>* _bindTable;
+	Evaluator* _evaluator;
 
 public:
 	Interpreter();
@@ -20,7 +22,7 @@ public:
 	~Interpreter();
 
 private:
-	void setCommandsMap();
+	void setExpressionsMap();
 };
 
 #endif

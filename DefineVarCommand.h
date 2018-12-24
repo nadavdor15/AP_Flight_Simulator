@@ -2,6 +2,7 @@
 #include "Command.h"
 #include "StringHelper.h"
 #include <iostream>
+#include <math.h>
 #include <map>
 
 using namespace std;
@@ -28,7 +29,7 @@ public:
 		StringHelper::addSpaces(argument);
 		arguments = StringHelper::split(argument, " ");
 		checkValidity(arguments[index]);
-		_symbolTable->operator[](arguments[index]) = 0;
+		_symbolTable->operator[](arguments[index]) = NAN;
 		return ++index;
 	}
 

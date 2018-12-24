@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "Interpreter.h"
-#define DELIM "\t "
 
 using namespace std;
 
@@ -25,8 +24,7 @@ int main(int argc, char* argv[]) {
 				vector<string> line = Interpreter::lexer(inputStr);
 				interpreter.parser(line, 0);
 			}
-		}
-		else {
+		} else {
 			vector<string> line = Interpreter::lexer(inputStr);
 			interpreter.parser(line, 0);
 		}

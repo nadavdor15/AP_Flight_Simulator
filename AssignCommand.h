@@ -34,21 +34,21 @@ public:
 				return index + 3;
 			}
 		}
-		string operators = string(OPERATORS);
-		for (int i = index + 1; i < arguments.size(); i++) {
-			try {
-				stoi(arguments[i]);
-			} catch (...) {
-				if (operators.find(arguments[i]) != string::npos)
-					continue;
-				if (_symbolTable->find(arguments[i]) == _symbolTable->end())
-					throw "The variable " + arguments[i] + " is not defined";
-				arguments[i] = to_string(_symbolTable->operator[](arguments[i]));
-			}
-		}
-		for (string s : arguments)
-			cout << "'" << s << "' ";
-		cout << endl;
+		// string operators = string(OPERATORS);
+		// for (int i = index + 1; i < arguments.size(); i++) {
+		// 	try {
+		// 		stod(arguments[i]);
+		// 	} catch (...) {
+		// 		if (operators.find(arguments[i]) != string::npos)
+		// 			continue;
+		// 		if (_symbolTable->find(arguments[i]) == _symbolTable->end())
+		// 			throw "The variable " + arguments[i] + " is not defined";
+		// 		arguments[i] = to_string(_symbolTable->operator[](arguments[i]));
+		// 	}
+		// }
+		// for (string s : arguments)
+		// 	cout << "'" << s << "' ";
+		// cout << endl;
 		return arguments.size();
 	}
 };
