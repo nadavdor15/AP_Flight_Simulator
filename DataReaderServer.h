@@ -16,7 +16,7 @@
 #define MAX_PORT_SIZE 65536
 #define MIN_PORT_SIZE 1
 #define MIN_SPEED 1
-#define SECOND_IN_MILLI
+#define SECOND_IN_MILLI 1000
 
 using namespace std;
 
@@ -57,8 +57,8 @@ private:
 		int server_fd;
 		if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			throw "Could not open server socket";
-    	struct sockaddr_in address;
-    	socklen_t addrlen = sizeof(address);
+    struct sockaddr_in address;
+    socklen_t addrlen = sizeof(address);
 
 		address.sin_family = AF_INET;
 		address.sin_addr.s_addr = INADDR_ANY;
@@ -72,24 +72,32 @@ private:
 		if (new_socket < 0)
 			throw "Could not accept a client";
 		cout << "Server has now accepted this client: " << address.sin_addr.s_addr << ", " << address.sin_port << endl;
+		vector<string> names = getNames();
+		char buffer[1024];
 		while (true) {
 			auto start = chrono::steady_clock::now();
-			char buffer[1024];
-			vector<string> names = getNames();
-			for (int i = 0; i < speed; i++) {
+	      	int i = 0;
+			string receivedData = "";
+			while (i < speed) {
+				bzero(buffer, 1024);
 				read(new_socket, buffer, 1024);
-				vector<string> valuesInString = StringHelper::split(string(buffer), ",");
-				vector<double> values;
-				for (string value : valuesInString) {
-					value.erase(remove_if(value.begin(), value.end(), ::isspace), value.end());
-					cout  << "in string: '" << value << "'" << endl;
-					cout  << "in double: '" << stod(value) << "'" << endl;
-					values.push_back(stod(value));
-				}
-				updateVars(values, symbolTable, bindTable, names);
+			    receivedData += string(buffer);
+			    if (receivedData.find("\n") != string::npos) {
+			      string packet = receivedData.substr(0, receivedData.find("\n") + 1);
+			      receivedData = receivedData.substr(receivedData.find("\n") + 1);
+			      vector<string> valuesInString = StringHelper::split(packet, ",");
+			      vector<double> values;
+			      for (string value : valuesInString) {
+			        value.erase(remove_if(value.begin(), value.end(), ::isspace), value.end());
+			        values.push_back(stod(value));
+			      }
+			      updateVars(values, symbolTable, bindTable, names);
+			      i++;
+			    }
 			}
 			auto end = chrono::steady_clock::now();
-			int time_left = SECOND_IN_MILLI - chrono::duration_cast<chrono::milliseconds>(end - start).count();
+			int time_passed = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+			int time_left = SECOND_IN_MILLI - time_passed;
 			if (time_left > 0)
 				this_thread::sleep_for(chrono::milliseconds(time_left));
 		}
