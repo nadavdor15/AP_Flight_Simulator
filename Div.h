@@ -1,12 +1,15 @@
+#ifndef DIV_H
+#define DIV_H
+
 #include "BinaryExpression.h"
 
 using namespace std;
 
 class Div : public BinaryExpression {
 public:
-    Div(Expression& right_expression,
-          Expression& left_expression):
-          BinaryExpression(right_expression, left_expression) {}
+    Div(Expression& left_expression,
+          Expression& right_expression):
+          BinaryExpression(left_expression, right_expression) {}
 
     double calculate(vector<string>& arguments, int index) {
     	double right = _right_expression.calculate(arguments, index);
@@ -16,3 +19,5 @@ public:
                right;
     }
 };
+
+#endif  //  !DIV_H

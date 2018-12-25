@@ -1,15 +1,21 @@
+#ifndef PLUS_H
+#define PLUS_H
+
+
 #include "BinaryExpression.h"
 
 using namespace std;
 
 class Plus : public BinaryExpression {
 public:
-    Plus(Expression& right_expression,
-          Expression& left_expression):
-          BinaryExpression(right_expression, left_expression) {}
+    Plus(Expression& left_expression,
+          Expression& right_expression):
+          BinaryExpression(left_expression, right_expression) {}
 
     double calculate(vector<string>& arguments, int index) {
-        return _right_expression.calculate(arguments, index) +
-               _left_expression.calculate(arguments, index);
+        return _left_expression.calculate(arguments, index) +
+               _right_expression.calculate(arguments, index);
     }
 };
+
+#endif	//	!PLUS_H

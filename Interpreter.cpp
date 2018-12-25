@@ -11,6 +11,15 @@
 #include "StringHelper.h"
 #define DELIM "\t "
 
+/*
+{} -> will make us read everything ()
+file interperter stoips at end of file!
+whike {} 
+{
+	
+}
+*/
+
 using namespace std;
 
 Interpreter::Interpreter() {
@@ -31,8 +40,10 @@ void Interpreter::parser(vector<string> line, int index) {
 		StringHelper::addSpaces(argument);
 		line = StringHelper::split(argument, " ");
 		try {
-			if (_symbolTable->find(line[i]) != _symbolTable->end())
+			if (_symbolTable->find(line[i]) != _symbolTable->end()) {
+				++i;
 				continue;
+			}
 			expression = _expressionsMap->at(line[i]);
 		} catch (...) {
 			cout << "Could not resolve '" << line[i] << "'" << endl;

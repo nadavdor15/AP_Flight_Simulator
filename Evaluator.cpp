@@ -8,10 +8,11 @@
 
 using namespace std;
 
+
 double Evaluator::evaluate(vector<string> arguments, unsigned int* index, map<string, double>* symbolTable) {
 	vector<string> postfix = toPostfix(arguments, index, symbolTable);
 	*index = lastIndex(arguments, index, symbolTable) + 1;
-	// return calculatePostfix(postfix);
+	return calculatePostfix(postfix);
 	return 0;
 }
 
@@ -117,14 +118,13 @@ double Evaluator::calculatePostfix(vector<string> arguments) {
 		} catch (...) {
 			string operant = arguments.front();
 			arguments.erase(arguments.begin());
-			Number rightNumber = operands.top();
-			operands.pop();
 			Number leftNumber = operands.top();
+			operands.pop();
+			Number rightNumber = operands.top();
 			operands.pop();
 			operands.push(calculateNumber(operant, rightNumber, leftNumber));
 		}
 	}
-	cout << "poping: " << operands.top() << endl;
 	return operands.top().calculate(arguments, 0);
 }
 

@@ -1,3 +1,6 @@
+#ifndef OPEN_SERVER_COMMAND_H
+#define OPEN_SERVER_COMMAND_H
+
 #include "Command.h"
 #include <iostream>
 #include "DataReaderServer.h"
@@ -8,8 +11,8 @@ class OpenServerCommand : public Command {
 	DataReaderServer _dataReaderServer;
 
 public:
-	OpenServerCommand(map<string,double>* symbolTable, map<string, vector<string>>* bindTable) {
-		_dataReaderServer = DataReaderServer(symbolTable, bindTable);
+	OpenServerCommand(map<string,double>* symbolTable, map<string, vector<string>>* bindTable):
+					 _dataReaderServer(DataReaderServer(symbolTable, bindTable)) {
 		_argumentsAmount = 2;
 	}
 
@@ -19,3 +22,5 @@ public:
 		return _dataReaderServer.doCommand(arguments, index);
 	}
 };
+
+#endif //	!OPEN_SERVER_COMMAND_H

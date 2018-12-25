@@ -19,4 +19,4 @@ public:
 	virtual ~Command() {}
 };
 
-#endif
+#endif //	!COMMAND_H

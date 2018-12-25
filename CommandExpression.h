@@ -26,4 +26,4 @@ public:
 	}
 };
 
-#endif
+#endif //	COMMAND_EXPRESSION_H
