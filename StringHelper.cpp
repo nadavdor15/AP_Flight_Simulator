@@ -38,7 +38,7 @@ vector<string> StringHelper::split(string line, const char* delim) {
 	return commands;
 }
 
-static bool StringHelper::endsWith(const string s, const string suffix) {
+bool StringHelper::endsWith(const string s, const string suffix) {
 	int suffixLen = suffix.size();
 	int sLen = s.size();
 	if (s.size() < suffixLen)
@@ -47,7 +47,7 @@ static bool StringHelper::endsWith(const string s, const string suffix) {
 		return (s.compare(sLen - suffixLen, suffixLen, suffix) == 0);
 }
 
-static bool StringHelper::startsWith(const string s, const string prefix) {
+bool StringHelper::startsWith(const string s, const string prefix) {
 	int prefixLen = prefix.size();
 	int sLen = s.size();
 	if (s.size() < prefixLen)
