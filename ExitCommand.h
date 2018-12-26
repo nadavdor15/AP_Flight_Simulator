@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class ExitCommand {
+class ExitCommand : public Command {
 	// no members.
 public:
 	
