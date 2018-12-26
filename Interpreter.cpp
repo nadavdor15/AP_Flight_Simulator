@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 #include "Interpreter.h"
 #include "OpenServerCommand.h"
 #include "ConnectCommand.h"
@@ -8,8 +7,12 @@
 #include "PrintCommand.h"
 #include "CommandExpression.h"
 #include "SleepCommand.h"
+#include "IfCommand.h"
+#include "ExitCommand.h"
+#include "LoopCommand.h"
 #include "StringHelper.h"
 #define DELIM "\t "
+#define BLOCK_COMMANDS ",while,if,"
 
 using namespace std;
 
@@ -27,8 +30,8 @@ vector<string> Interpreter::lexer(string line) {
 	return StringHelper::split(line, DELIM);
 }
 
-void Interpreter::parser(vector<string> line, int index) {
-	for (unsigned int i = index; i < line.size(); /*i++*/) {
+void Interpreter::parser(vector<string> line, int index, istream& stream) {
+	for (unsigned int i = index; i < line.size();) {
 		Expression* expression;
 		string argument = StringHelper::getArgument(line);
 		StringHelper::addSpaces(argument);
@@ -39,6 +42,7 @@ void Interpreter::parser(vector<string> line, int index) {
 				continue;
 			}
 			expression = _expressionsMap->at(line[i]);
+			line = parseBlock(line, i, stream);
 		} catch (...) {
 			cout << "Could not resolve '" << line[i] << "'" << endl;
 			i++;
@@ -56,6 +60,29 @@ void Interpreter::parser(vector<string> line, int index) {
 	}
 }
 
+vector<string> Interpreter::parseBlock(vector<string>& line, int i, istream& stream) {
+	string seperator = ",";
+	string blockCommands = string(BLOCK_COMMANDS);
+	if (blockCommands.find(seperator + line[i] + seperator) != string::npos) {
+		string untilBracket = "";
+		string current = StringHelper::getArgument(line);
+		int indentation = 0;
+		do {
+			untilBracket += current + " \n";
+			if (current.find("{") != string::npos)
+				++indentation;
+			if (current.find("}") != string::npos)
+				if (--indentation == 0)
+					break;
+		} while (getline(stream, current));
+		line = lexer(untilBracket);
+		string argument = StringHelper::getArgument(line);
+		StringHelper::addSpaces(argument);
+		return StringHelper::split(argument, " ");
+	}
+	return line;
+}
+
 void Interpreter::setExpressionsMap() {
 	_expressionsMap->operator[]("openDataServer") = new CommandExpression(new OpenServerCommand(_symbolTable, _pathToVar, _bindedVarTable, _modifier));
 	_expressionsMap->operator[]("connect") = new CommandExpression(new ConnectCommand(_symbolTable));
@@ -63,6 +90,9 @@ void Interpreter::setExpressionsMap() {
 	_expressionsMap->operator[]("=") = new CommandExpression(new AssignCommand(_symbolTable, _pathToVar, _bindedVarTable, _modifier));
 	_expressionsMap->operator[]("print") = new CommandExpression(new PrintCommand(_symbolTable));
 	_expressionsMap->operator[]("sleep") = new CommandExpression(new SleepCommand(_symbolTable));
+	_expressionsMap->operator[]("if") = new CommandExpression(new IfCommand(_symbolTable, _expressionsMap));
+	_expressionsMap->operator[]("while") = new CommandExpression(new LoopCommand(_symbolTable, _expressionsMap));
+	_expressionsMap->operator[]("exit") = new CommandExpression(new ExitCommand());
 }
 
 bool Interpreter::isScriptFile(string& line) {

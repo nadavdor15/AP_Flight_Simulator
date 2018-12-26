@@ -1,4 +1,5 @@
 #include "Evaluator.h"
+#include "StringHelper.h"
 #include "Mul.h"
 #include "Minus.h"
 #include "Div.h"
@@ -7,7 +8,6 @@
 #include <stack>
 
 using namespace std;
-
 
 double Evaluator::evaluate(vector<string> arguments, unsigned int* index, map<string, double>* symbolTable) {
 	vector<string> postfix = toPostfix(arguments, index, symbolTable);
@@ -29,6 +29,10 @@ vector<string> Evaluator::assignVars(vector<string> arguments,
 		} catch (...) {
 			if (operands.find(arguments[i]) != operands.end())
 				continue;
+			if (StringHelper::startsWith(arguments[i], "\n")) {
+				arguments.erase(arguments.begin() + i);
+				continue;
+			}
 			if (symbolTable->find(arguments[i]) == symbolTable->end())
 				throw "The variable " + arguments[i] + " is not defined";
 			arguments[i] = to_string(symbolTable->operator[](arguments[i]));

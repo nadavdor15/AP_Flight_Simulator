@@ -9,6 +9,7 @@ using namespace std;
 class DataReaderServer : public Command {
 	map<string, string>* _pathToVar;
 	Modifier* _modifier;
+  int _sockID;
 public:
 
 	DataReaderServer(map<string,double>* symbolTable,
@@ -16,13 +17,14 @@ public:
 					 map<string, vector<string>>* bindedVarTable,
 					 Modifier* modifier);
 	virtual int doCommand(vector<string>& arguments, unsigned int index);
-
+  virtual ~DataReaderServer();
 private:
-	static void startServer(int port, 
-							unsigned int speed,
-							map<string, double>* symbolTable,
-							map<string, string>* pathToVar,
-							Modifier* modifier);
+  void openSocket(int port);
+	static void startServer(int new_socket,
+            unsigned int speed,
+						map<string,double>* symbolTable,
+						map<string, string>* pathToVar,
+						Modifier* modifier);
 	static void updateVars(vector<double> values,
 						   Modifier* modifier,
 						   map<string, string>* pathToVar,

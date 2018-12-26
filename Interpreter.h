@@ -4,6 +4,7 @@
 #include <map>
 #include "Expression.h"
 #include "Evaluator.h"
+#include <iostream>
 #include "Modifier.h"
 
 using namespace std;
@@ -21,7 +22,8 @@ public:
 	Interpreter();
 	static vector<string> lexer(string line);
 	static bool isScriptFile(string& line);
-	void parser(vector<string> line, int index);
+	void parser(vector<string> line, int index, istream& stream);
+	vector<string> parseBlock(vector<string>& line, int i, istream& stream);
 	~Interpreter();
 
 private:

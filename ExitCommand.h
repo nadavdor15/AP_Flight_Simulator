@@ -9,15 +9,12 @@ using namespace std;
 class ExitCommand : public Command {
 	// no members.
 public:
-	
 	ExitCommand() {}
 
 	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		exit(0);
 		return 0;
 	}
-
-	virtual ~Command() {}
-}
+};
 
 #endif //	!EXIT_COMMAND

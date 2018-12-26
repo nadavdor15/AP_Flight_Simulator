@@ -18,6 +18,10 @@
 
 using namespace std;
 
+DataReaderServer::~DataReaderServer() {
+  close(this->_sockID);
+}
+
 DataReaderServer::DataReaderServer(map<string,double>* symbolTable,
 					 			   map<string, string>* pathToVar,
 								   map<string, vector<string>>* bindedVarTable,
@@ -26,6 +30,7 @@ DataReaderServer::DataReaderServer(map<string,double>* symbolTable,
 		_pathToVar = pathToVar;
 		_modifier = modifier;
 		_argumentsAmount = 2;
+    _sockID = -1;
 }
 
 int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
@@ -37,17 +42,14 @@ int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
 		throw "First argument must be in range of 1-65536";
 	if (speed < MIN_SPEED)
 		throw "Second argument must be positive";
-	thread t1(startServer, port, speed, _symbolTable, _pathToVar, _modifier);
+  this->openSocket(port);
+	thread t1(startServer, this->_sockID, speed, _symbolTable, _pathToVar, _modifier);
 	t1.detach();
 	return ++index;
 }
 
-void DataReaderServer::startServer(int port, 
-						unsigned int speed,
-						map<string,double>* symbolTable,
-						map<string, string>* pathToVar,
-						Modifier* modifier) {
-	int server_fd;
+void DataReaderServer::openSocket(int port) {
+  int server_fd;
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		cout << "Could not open server socket, CLI is terminated" << endl;
 		exit(1);
@@ -65,12 +67,19 @@ void DataReaderServer::startServer(int port,
 		cout << "Could not listen, please be more quiet, CLI is terminated" << endl;
 		exit(1);
 	}
-	int new_socket = accept(server_fd, (struct sockaddr*) &address, &addrlen);
-	if (new_socket < 0) {
+	int _sockID = accept(server_fd, (struct sockaddr*) &address, &addrlen);
+	if (_sockID < 0) {
 		cout << "Could not accept a client, CLI is terminated." << endl;
 		exit(1);
 	}
 	cout << "Server has now accepted this client: " << address.sin_addr.s_addr << ", " << address.sin_port << endl;
+}
+
+void DataReaderServer::startServer(int new_socket,
+            unsigned int speed,
+						map<string,double>* symbolTable,
+						map<string, string>* pathToVar,
+						Modifier* modifier) {
 	vector<string> names = getNames();
 	char buffer[1024];
 	mutex mtx;

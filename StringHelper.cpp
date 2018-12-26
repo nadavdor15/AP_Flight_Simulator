@@ -1,18 +1,27 @@
+#define SHOULD_GET_SPACES ",+,-,*,/,<,<=,>,>=,!=,==,=,(,),{,},[,],(),[],{},!,"
+#define DOUBLE_CHAR_OPERANTS ",<=,>=,==,!=,"
 #include "StringHelper.h"
-#include <string>
-#include <vector>
+#include <stdio.h>
 
 using namespace std;
 
 void StringHelper::addSpaces(string& line) {
   	string needSpaces = string(SHOULD_GET_SPACES);
-	for (int i = 0; (i + 1) < line.length(); i++) {
+  	string doubleCharSpaces = string(DOUBLE_CHAR_OPERANTS);
+  	string seperator = ",";
+	for (unsigned int i = 0; (i + 1) < line.length(); i++) {
 		if (line[i] == '\"')
 			while (line[++i] != '\"') {}
-		if (needSpaces.find(string(",") + line[i] + string(",")) != string::npos) {
-        	line.insert(i + 1, " ");
-        	line.insert(i, " ");
-        	i+=2;
+		if (needSpaces.find(seperator + line[i] + seperator) != string::npos) {
+			if (doubleCharSpaces.find(seperator + line.substr(i, 2) + seperator) != string::npos) {
+				line.insert(i + 2, " ");
+				line.insert(i, " ");
+				i++;
+			} else {
+		    	line.insert(i + 1, " ");
+    			line.insert(i, " ");
+    		}
+    		i+=2;
 	  	}
 	}
 }
@@ -26,7 +35,7 @@ string StringHelper::getArgument(vector<string>& arguments) {
 
 vector<string> StringHelper::split(string line, const char* delim) {
 	vector<string> commands;
-	int firstIndex;
+	unsigned int firstIndex;
 	while ((firstIndex = line.find_first_of(delim)) < line.length()) {
 		string word = line.substr(0, firstIndex);
 		if (word.length())
@@ -39,18 +48,18 @@ vector<string> StringHelper::split(string line, const char* delim) {
 }
 
 bool StringHelper::endsWith(const string s, const string suffix) {
-	int suffixLen = suffix.size();
-	int sLen = s.size();
-	if (s.size() < suffixLen)
+	unsigned int suffixLen = suffix.size();
+	unsigned int sLen = s.size();
+	if (sLen < suffixLen)
 		return false;
 	else 
 		return (s.compare(sLen - suffixLen, suffixLen, suffix) == 0);
 }
 
 bool StringHelper::startsWith(const string s, const string prefix) {
-	int prefixLen = prefix.size();
-	int sLen = s.size();
-	if (s.size() < prefixLen)
+	unsigned int prefixLen = prefix.size();
+	unsigned int sLen = s.size();
+	if (sLen < prefixLen)
 		return false;
 	else 
 		return (s.compare(0, prefixLen, prefix) == 0);
