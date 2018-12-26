@@ -4,14 +4,10 @@ TODO:
 
   * while
   * if
-  * Evaluator - it's own class. evaluator static class. map *vars
+  * Evaluator - it's own class. evaluator static class. map *vars, open data server, connect, sleep, 
   * simulator as server
   * TCP reading -> always read untill blank line. (class:dataReaderServer, function: startServer)
-  * sleep
   * FIX BUG: x var x
   * add {} in main
-  * open server command - chande binded from having vector of string to string
-לעשות דיסטרקטור לדאטה סרבר שיסגור את הסוקט
 EXTRA:
-  * print - add שרשורים
   *
