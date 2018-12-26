@@ -10,6 +10,7 @@
 #include <string.h>
 #include <thread>
 #include <chrono>
+#include <mutex>
 #define MAX_PORT_SIZE 65536
 #define MIN_PORT_SIZE 1
 #define MIN_SPEED 1
@@ -18,11 +19,14 @@
 using namespace std;
 
 DataReaderServer::DataReaderServer(map<string,double>* symbolTable,
-					 map<string, vector<string>>* bindTable) {
+					 			   map<string, string>* pathToVar,
+								   map<string, vector<string>>* bindedVarTable,
+								   Modifier* modifier) {
 		_symbolTable = symbolTable;
-		_bindTable = bindTable;
+		_pathToVar = pathToVar;
+		_modifier = modifier;
 		_argumentsAmount = 2;
-	}
+}
 
 int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
@@ -33,22 +37,23 @@ int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
 		throw "First argument must be in range of 1-65536";
 	if (speed < MIN_SPEED)
 		throw "Second argument must be positive";
-	thread t1(startServer, port, speed, _symbolTable, _bindTable);
+	thread t1(startServer, port, speed, _symbolTable, _pathToVar, _modifier);
 	t1.detach();
 	return ++index;
 }
 
 void DataReaderServer::startServer(int port, 
 						unsigned int speed,
-						map<string,double>* symbolTable, map<string,
-						vector<string>>* bindTable) {
+						map<string,double>* symbolTable,
+						map<string, string>* pathToVar,
+						Modifier* modifier) {
 	int server_fd;
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		cout << "Could not open server socket, CLI is terminated" << endl;
 		exit(1);
 	}
-struct sockaddr_in address;
-socklen_t addrlen = sizeof(address);
+	struct sockaddr_in address;
+	socklen_t addrlen = sizeof(address);
 
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
@@ -68,12 +73,14 @@ socklen_t addrlen = sizeof(address);
 	cout << "Server has now accepted this client: " << address.sin_addr.s_addr << ", " << address.sin_port << endl;
 	vector<string> names = getNames();
 	char buffer[1024];
+	mutex mtx;
 	while (true) {
 		auto start = chrono::steady_clock::now();
       	unsigned int i = 0;
 		string receivedData = "";
 		while (i < speed) {
 			bzero(buffer, 1024);
+			mtx.lock();
 			read(new_socket, buffer, 1024);
 		    receivedData += string(buffer);
 		    if (receivedData.find("\n") != string::npos) {
@@ -85,7 +92,8 @@ socklen_t addrlen = sizeof(address);
 		        value.erase(remove_if(value.begin(), value.end(), ::isspace), value.end());
 		        values.push_back(stod(value));
 		      }
-		      updateVars(values, symbolTable, bindTable, names);
+		      updateVars(values, modifier, pathToVar, names);
+		      mtx.unlock();
 		      i++;
 		    }
 		}
@@ -98,13 +106,12 @@ socklen_t addrlen = sizeof(address);
 }
 
 void DataReaderServer::updateVars(vector<double> values,
-					   map<string,double>* symbolTable,
-					   map<string, vector<string>>* bindTable,
+					   Modifier* modifier,
+					   map<string, string>* pathToVar,
 					   vector<string>& names) {
 	for (unsigned int i = 0; i < names.size(); i++) {
-		vector<string> binds = bindTable->operator[](names[i]);
-		for (string bind : binds)
-			symbolTable->at(bind) = values[i];
+		string var = pathToVar->operator[](names[i]);
+		modifier->setVariableValue(var, values[i]);
 	}
 }
 

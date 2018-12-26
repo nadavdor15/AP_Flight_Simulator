@@ -4,6 +4,7 @@
 #include <map>
 #include "Expression.h"
 #include "Evaluator.h"
+#include "Modifier.h"
 
 using namespace std;
 
@@ -11,7 +12,10 @@ class Interpreter {
 private:
 	map<string, Expression*>* _expressionsMap;
 	map<string, double>* _symbolTable;
-	map<string, vector<string>>* _bindTable;
+	map<string, string>* _pathToVar;
+	map<string, string>* _varToPath;
+	Modifier* _modifier;
+	map<string, vector<string>>* _bindedVarTable;
 
 public:
 	Interpreter();

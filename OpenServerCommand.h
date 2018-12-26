@@ -2,6 +2,7 @@
 #define OPEN_SERVER_COMMAND_H
 
 #include "Command.h"
+#include "Modifier.h"
 #include <iostream>
 #include "DataReaderServer.h"
 
@@ -11,8 +12,11 @@ class OpenServerCommand : public Command {
 	DataReaderServer _dataReaderServer;
 
 public:
-	OpenServerCommand(map<string,double>* symbolTable, map<string, vector<string>>* bindTable):
-					 _dataReaderServer(DataReaderServer(symbolTable, bindTable)) {
+	OpenServerCommand(map<string,double>* symbolTable,
+					  map<string, string>* pathToVar,
+					  map<string, vector<string>>* bindedVarServer,
+					  Modifier* modifier):
+					 _dataReaderServer(DataReaderServer(symbolTable, pathToVar, bindedVarServer, modifier)) {
 		_argumentsAmount = 2;
 	}
 

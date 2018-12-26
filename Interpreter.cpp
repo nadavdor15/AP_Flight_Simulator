@@ -11,21 +11,15 @@
 #include "StringHelper.h"
 #define DELIM "\t "
 
-/*
-{} -> will make us read everything ()
-file interperter stoips at end of file!
-whike {} 
-{
-	
-}
-*/
-
 using namespace std;
 
 Interpreter::Interpreter() {
 	_expressionsMap = new map<string, Expression*>();
 	_symbolTable = new map<string, double>();
-	_bindTable = new map<string, vector<string>>();
+	_pathToVar = new map<string, string>();
+	_varToPath = new map<string, string>();
+	_bindedVarTable = new map<string, vector<string>>();
+	_modifier = new Modifier(_bindedVarTable, _symbolTable);
 	setExpressionsMap();
 }
 
@@ -63,10 +57,10 @@ void Interpreter::parser(vector<string> line, int index) {
 }
 
 void Interpreter::setExpressionsMap() {
-	_expressionsMap->operator[]("openDataServer") = new CommandExpression(new OpenServerCommand(_symbolTable, _bindTable));
+	_expressionsMap->operator[]("openDataServer") = new CommandExpression(new OpenServerCommand(_symbolTable, _pathToVar, _bindedVarTable, _modifier));
 	_expressionsMap->operator[]("connect") = new CommandExpression(new ConnectCommand(_symbolTable));
 	_expressionsMap->operator[]("var") = new CommandExpression(new DefineVarCommand(_symbolTable, _expressionsMap));
-	_expressionsMap->operator[]("=") = new CommandExpression(new AssignCommand(_symbolTable, _bindTable));
+	_expressionsMap->operator[]("=") = new CommandExpression(new AssignCommand(_symbolTable, _pathToVar, _bindedVarTable, _modifier));
 	_expressionsMap->operator[]("print") = new CommandExpression(new PrintCommand(_symbolTable));
 	_expressionsMap->operator[]("sleep") = new CommandExpression(new SleepCommand(_symbolTable));
 }
@@ -90,5 +84,8 @@ Interpreter::~Interpreter() {
 		delete it->second;
 	delete _expressionsMap;
 	delete _symbolTable;
-	delete _bindTable;
+	delete _pathToVar;
+	delete _bindedVarTable;
+	delete _varToPath;
+	delete _modifier;
 }

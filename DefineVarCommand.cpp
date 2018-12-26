@@ -2,6 +2,7 @@
 #include "Expression.h"
 #include "StringHelper.h"
 #include <iostream>
+#include <stdio.h>
 #include <math.h>
 
 using namespace std;
@@ -28,10 +29,9 @@ int DefineVarCommand::doCommand(vector<string>& arguments, unsigned int index) {
 }
 
 void DefineVarCommand::checkValidity(string varName) {
-	for (unsigned int i = 0; i < varName.length(); i++)
-		if ((varName[i] < 'a' || varName[i] > 'z') && varName[i] != '_' &&
-			(varName[i] < 'A' || varName[i] > 'Z') && ('0' > varName[i] || varName[i] > '9'))
-			throw "The name " + varName + " contains a char that is not a-z OR A-Z OR 1-9 OR _";
-	if ('0' <= varName[0] && varName[0] <= '9')
+	if (isdigit(varName[0]))
 		throw "The name " + varName + " contains a digit for first char";
+	for (unsigned int i = 0; i < varName.length(); i++)
+		if (!isalpha(varName[i]) && !isdigit(varName[i]) && varName[i] != '_')
+			throw "The name " + varName + " contains a char that is not a-z OR A-Z OR 1-9 OR _";
 }
