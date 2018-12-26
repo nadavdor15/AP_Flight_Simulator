@@ -11,7 +11,7 @@ TODO:
   * FIX BUG: x var x
   * add {} in main
   * open server command - chande binded from having vector of string to string
-
+לעשות דיסטרקטור לדאטה סרבר שיסגור את הסוקט
 EXTRA:
   * print - add שרשורים
   *
