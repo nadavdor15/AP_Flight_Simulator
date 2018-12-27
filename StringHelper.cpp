@@ -64,3 +64,44 @@ bool StringHelper::startsWith(const string s, const string prefix) {
 	else 
 		return (s.compare(0, prefixLen, prefix) == 0);
 }
+
+vector<vector<string>> StringHelper::splitVector(const vector<string>& vec, const char* delim) {
+  vector<vector<string>> total;
+  vector<string> current;
+  auto end = vec.end();
+  auto before = vec.begin();
+  for (auto it = vec.begin(); it != end;) {
+    if (it->find(delim) != string::npos) {
+      current = vector<string>(before, it++);
+      if (current.size())
+        total.push_back(current);
+      before = it;
+    } else
+      ++it;
+  }
+    current = vector<string>(before, end);
+    if (current.size())
+      total.push_back(current);
+    return total;
+}
+
+
+/*
+* watch out! can remove all of the vector!
+*/
+vector<string> StringHelper::removeUntill(vector<string> v, const string s) {
+	while (v.begin()->compare(s) != 0 && v.size())
+		v.erase(v.begin());
+	if (v.size())
+    	v.erase(v.begin());
+	return v;
+}
+
+int StringHelper::nextIndexOf(vector<string>::iterator itr, const string s, vector<string>::iterator end) {
+	int i = 0;
+	while (itr != end && itr->compare(s) != 0) {
+		++itr;
+		++i;
+	}
+	return i;
+}

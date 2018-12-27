@@ -22,15 +22,15 @@ int PrintCommand::doCommand(vector<string>& arguments, unsigned int index) {
 				cout << arg << " ";
 				arg = arguments[++index];
 			}
-      arg_l = arg.length();
+     		arg_l = arg.length();
 			cout << arg.substr(0, arg_l - 1);
-		}
-		else {
+		} else {
 			if (_symbolTable->find(arg) == _symbolTable->end())
 				throw "The var " + arg + " is not defined";
 			cout << _symbolTable->at(arg);
 		}
 	} while ((++index + 1) < arguments.size() && arguments[index] == "+");
 	cout << endl;
+	// cout << "returning index " << index << endl;
 	return index;
 }

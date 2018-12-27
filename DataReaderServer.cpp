@@ -67,7 +67,7 @@ void DataReaderServer::openSocket(int port) {
 		cout << "Could not listen, please be more quiet, CLI is terminated" << endl;
 		exit(1);
 	}
-	int _sockID = accept(server_fd, (struct sockaddr*) &address, &addrlen);
+	_sockID = accept(server_fd, (struct sockaddr*) &address, &addrlen);
 	if (_sockID < 0) {
 		cout << "Could not accept a client, CLI is terminated." << endl;
 		exit(1);
@@ -76,20 +76,20 @@ void DataReaderServer::openSocket(int port) {
 }
 
 void DataReaderServer::startServer(int new_socket,
-            unsigned int speed,
-						map<string,double>* symbolTable,
-						map<string, string>* pathToVar,
-						Modifier* modifier) {
+			            		   unsigned int speed,
+								   map<string,double>* symbolTable,
+								   map<string, string>* pathToVar,
+								   Modifier* modifier) {
 	vector<string> names = getNames();
 	char buffer[1024];
-	mutex mtx;
+	// mutex mtx;
 	while (true) {
 		auto start = chrono::steady_clock::now();
       	unsigned int i = 0;
 		string receivedData = "";
 		while (i < speed) {
 			bzero(buffer, 1024);
-			mtx.lock();
+			// mtx.lock();
 			read(new_socket, buffer, 1024);
 		    receivedData += string(buffer);
 		    if (receivedData.find("\n") != string::npos) {
@@ -102,7 +102,7 @@ void DataReaderServer::startServer(int new_socket,
 		        values.push_back(stod(value));
 		      }
 		      updateVars(values, modifier, pathToVar, names);
-		      mtx.unlock();
+		      // mtx.unlock();
 		      i++;
 		    }
 		}

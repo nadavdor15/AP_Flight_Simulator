@@ -1,13 +1,21 @@
 #include "LoopCommand.h"
+#include "StringHelper.h"
+
+using namespace std;
 
 LoopCommand::LoopCommand(map<string, double>* symbolTable,
-						 map<string, Expression*>* expressionMap):
-						 ConditionParser(symbolTable) {
-
+                  			 map<string, Expression*>* expressionsMap,
+                         Interpreter* interpreter):
+                  			 ConditionParser(symbolTable, expressionsMap, interpreter) {
+  _argumentsAmount = 5;
 }
 
 int LoopCommand::doCommand(vector<string>& arguments, unsigned int index) {
-	if (this->conditionIsTrue(arguments))
-		cout << "TRUEEEEEEEEEEEE" << endl;
-  return arguments.size();
+  if ((arguments.size() - 1 - index) < _argumentsAmount)
+  	throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
+  while (this->conditionIsTrue(arguments)) {
+    vector<string> argumentsOnly = extractBlock(arguments);
+    this->runBlock(argumentsOnly);
+  }
+  return StringHelper::nextIndexOf(arguments.begin(), "}", arguments.end()) + 1;
 }

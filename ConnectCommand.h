@@ -14,7 +14,7 @@ class ConnectCommand : public Command {
 public:
 	ConnectCommand(map<string, double>* symbolTable);
 	virtual int doCommand(vector<string>& arguments, unsigned int index);
-	void sendMessage() {}
+	void sendMessage(const string message);
 	~ConnectCommand();
 };
 
