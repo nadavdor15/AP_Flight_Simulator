@@ -16,6 +16,11 @@ public:
 				  map<string, string>* pathToVar,
 			 	  map<string, vector<string>>* bindedVarTable,
 			 	  Modifier* modifier);
+
+	/*
+	* doCommand ->
+	* assigns variable it's requested value.
+	*/
 	virtual int doCommand(vector<string>& arguments, unsigned int index);
 };
 

@@ -127,8 +127,8 @@ void Interpreter::setStream(istream& stream) {
 }
 
 Interpreter::~Interpreter() {
-	for (auto it = _expressionsMap->begin(); it != _expressionsMap->end(); it++)
-		delete it->second;
+//	for (auto it = _expressionsMap->begin(); it != _expressionsMap->end(); it++)
+//		delete it->second;
 	delete _expressionsMap;
 	delete _symbolTable;
 	delete _pathToVar;

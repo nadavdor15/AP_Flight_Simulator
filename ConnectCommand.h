@@ -12,7 +12,17 @@ class ConnectCommand : public Command {
 	void startClient(const char* dst_addr);
 
 public:
+
+	/*
+	* function that starts the connection between the simulator and program
+	* as clients.
+	*/
 	ConnectCommand(map<string, double>* symbolTable);
+
+	/*
+	* do Command reads the arguments and sets the connection
+	* between the simulator.
+	* */
 	virtual int doCommand(vector<string>& arguments, unsigned int index);
 	void sendMessage(const string message);
 	~ConnectCommand();

@@ -20,9 +20,18 @@ public:
 	virtual int doCommand(vector<string>& arguments, unsigned int index) = 0;
 
 protected:
+
+	/*
+ 	* function that calculates whether the condition
+ 	* held by the condition parser is accurate.
+ 	* */
 	bool conditionIsTrue(vector<string>& arguments);
+
+	// this function runs the commands in the body's block.
     void runBlock(vector<string>& arguments);
-    vector<string> extractBlock(vector<string>& vec);
+
+	// extracts the block of commands from the condition.
+	vector<string> extractBlock(vector<string>& vec);
 };
 
 #endif

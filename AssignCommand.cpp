@@ -13,7 +13,6 @@ AssignCommand::AssignCommand(map<string, double>* symbolTable,
 	_argumentsAmount = 2;
 }
 
-
 /*
 * doCommand -> 
 * assigns variable it's requested value. 
@@ -21,10 +20,12 @@ AssignCommand::AssignCommand(map<string, double>* symbolTable,
 int AssignCommand::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
 		throw "Arguments amount is lower than " + to_string(_argumentsAmount);
+	// if variable doesn't exist, sends an exception.
 	if (_symbolTable->find(arguments[index - 1]) == _symbolTable->end())
 		throw "The variable " + arguments[index - 1] + " is not defined";
 	string argument = StringHelper::getArgument(arguments);
 	if ((arguments.size() - index - 1) >= 2) {
+		// looks for "bind" call. if so, binds.
 		if (arguments[index + 1].compare(string("bind")) == 0) {
 			string path = arguments[index + 2];
 			int path_length = path.length();
@@ -46,6 +47,7 @@ int AssignCommand::doCommand(vector<string>& arguments, unsigned int index) {
 	}
 	int varIndex = index - 1;
 	double value = Evaluator::evaluate(arguments, &(++index), _symbolTable);
+	// calls the modifier who is responsible to managing the variables.
 	_modifier->setVariableValue(arguments[varIndex], value);
 	_modifier->updateSimulator(arguments[varIndex]);
 	return index;

@@ -8,6 +8,10 @@
 
 using namespace std;
 
+/*
+ * Command - Abstract class.
+ * Represents commands that are enabled in our interpreter.
+ * */
 class Command {
 protected:
 	unsigned int _argumentsAmount;

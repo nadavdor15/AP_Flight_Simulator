@@ -5,6 +5,10 @@
 
 using namespace std;
 
+/*
+ * Abstract class that represents expressions
+ * who operate over 2 expressions.
+ * */
 class BinaryExpression : public Expression {
 protected:
     Expression& _left_expression;
