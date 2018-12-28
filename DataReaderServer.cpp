@@ -30,9 +30,14 @@ DataReaderServer::DataReaderServer(map<string,double>* symbolTable,
 	_pathToVar = pathToVar;
 	_modifier = modifier;
 	_argumentsAmount = 2;
-    _sockID = -1;
+	_sockID = -1;
 }
 
+/*
+* doCommand ->
+* Opens a server on a different thread that the simulator connects to, and recieves messages from it
+* at a given speed.
+* */
 int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
 		throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
@@ -48,6 +53,9 @@ int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
 	return ++index;
 }
 
+/*
+* opens a socket and waits for first signs from the simulator.
+* */
 void DataReaderServer::openSocket() {
   int server_fd;
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -74,9 +82,13 @@ void DataReaderServer::openSocket() {
 		cout << "Could not accept a client, CLI is terminated." << endl;
 		exit(1);
 	}
-	cout << "Server has now accepted this client: " << address.sin_addr.s_addr << ", " << address.sin_port << endl;
+// 	cout << "Server has now accepted this client: " << address.sin_addr.s_addr << ", " << address.sin_port << endl;
 }
 
+/*
+* starts the server on a different thread that runs on the
+* speed given in the arguments.
+* */
 void DataReaderServer::startServer(int new_socket,
 			            		   unsigned int speed,
 								   map<string,double>* symbolTable,
@@ -116,6 +128,10 @@ void DataReaderServer::startServer(int new_socket,
 	}
 }
 
+/*
+* calls the modifier (who is responsible to managing the variables)
+* and updates them accourding to the simulator.
+* */
 void DataReaderServer::updateVars(vector<double> values,
 					   Modifier* modifier,
 					   map<string, string>* pathToVar,
