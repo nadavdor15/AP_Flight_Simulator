@@ -6,11 +6,16 @@
 
 using namespace std;
 
+/*
+* main function that runs the interpreter.
+* reads the script line by line.
+* */
 int main(int argc, char* argv[]) {
 	Interpreter interpreter;
 	vector<string> endProgram = {"exit"};
 
 	string inputStr;
+	// if we have a filename to read from:
 	if (argc == 2) {
 		ifstream script(argv[1]);
 		interpreter.setStream(script);
@@ -20,6 +25,10 @@ int main(int argc, char* argv[]) {
 		}
 		return 0;
 	}
+	/*
+	* else, we read from the command line.
+	* and parse each line.
+	* */
 	while (getline(cin, inputStr)) {
 		if (Interpreter::isScriptFile(inputStr)) {
 			ifstream script(inputStr);
