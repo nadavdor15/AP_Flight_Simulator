@@ -58,6 +58,9 @@ unsigned int Interpreter::parser(vector<string> line, int index) {
 		} catch (char const* e) {
 			cout << e << endl;
 			break;
+		} catch (...) {
+			cout << "Unknown Error" << endl;
+			exit(1);
 		}
 	}
 	return linesC;

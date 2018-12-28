@@ -17,5 +17,5 @@ int SleepCommand::doCommand(vector<string>& arguments, unsigned int index) {
   unsigned int argC = ++index;
   double millisec = Evaluator::evaluate(arguments, &argC, _symbolTable);
   usleep(millisec * MILLI_IN_MICRO);
-  return 1 + argC;
+  return argC;
 }

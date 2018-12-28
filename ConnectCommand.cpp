@@ -7,6 +7,7 @@
 #include <string.h>
 #include <thread>
 #include <malloc.h>
+#include <stdio.h>
 
 #define MAX_PORT_SIZE 65536
 #define MIN_PORT_SIZE 1
@@ -25,7 +26,7 @@ void ConnectCommand::startClient(const char* dst_addr) {
 		cout << "Could not open client socket, CLI is terminated" << endl;
 		exit(1);
 	}
-
+ 
 	address.sin_family = AF_INET;
     inet_aton(dst_addr, &address.sin_addr);
     address.sin_port = htons(_port);
@@ -41,7 +42,7 @@ int ConnectCommand::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
 		throw "Arguments amount is lower than " + to_string(_argumentsAmount);
 	const char* ip_address = arguments[++index].c_str();
-	_port = stoi(arguments[++index]);
+	_port = (int) Evaluator::evaluate(arguments, &(++index), _symbolTable);
 	if (_port < MIN_PORT_SIZE || _port > MAX_PORT_SIZE)
 		throw "Second argument must be in range of 1-65536";
 	startClient(ip_address);
@@ -49,10 +50,11 @@ int ConnectCommand::doCommand(vector<string>& arguments, unsigned int index) {
 }
 
 void ConnectCommand::sendMessage(const string message) {
-	char* msg = (char*) malloc((message.length() + 2)*sizeof(char));
+	char* msg = NULL;
+	while (msg == NULL)
+		msg = (char*) malloc((message.length() + 2)*sizeof(char));
 	strcpy(msg, message.c_str());
 	strcat(msg, "\r\n");
-	cout << "we send: '" << msg << "'" << endl;
 	send(_client_fd, msg, strlen(msg), 0);
 	free(msg);
 }

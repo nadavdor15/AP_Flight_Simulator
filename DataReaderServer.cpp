@@ -26,29 +26,29 @@ DataReaderServer::DataReaderServer(map<string,double>* symbolTable,
 					 			   map<string, string>* pathToVar,
 								   map<string, vector<string>>* bindedVarTable,
 								   Modifier* modifier) {
-		_symbolTable = symbolTable;
-		_pathToVar = pathToVar;
-		_modifier = modifier;
-		_argumentsAmount = 2;
+	_symbolTable = symbolTable;
+	_pathToVar = pathToVar;
+	_modifier = modifier;
+	_argumentsAmount = 2;
     _sockID = -1;
 }
 
 int DataReaderServer::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
 		throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
-	int port = stoi(arguments[++index]);
-	unsigned int speed = stoi(arguments[++index]);
-	if (port < MIN_PORT_SIZE || port > MAX_PORT_SIZE)
+	_port = (int) Evaluator::evaluate(arguments, &(++index), _symbolTable);
+	unsigned int speed = (unsigned int) Evaluator::evaluate(arguments, &(index), _symbolTable);
+	if (_port < MIN_PORT_SIZE || _port > MAX_PORT_SIZE)
 		throw "First argument must be in range of 1-65536";
 	if (speed < MIN_SPEED)
 		throw "Second argument must be positive";
-  this->openSocket(port);
+	this->openSocket();
 	thread t1(startServer, this->_sockID, speed, _symbolTable, _pathToVar, _modifier);
 	t1.detach();
 	return ++index;
 }
 
-void DataReaderServer::openSocket(int port) {
+void DataReaderServer::openSocket() {
   int server_fd;
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		cout << "Could not open server socket, CLI is terminated" << endl;
@@ -59,10 +59,12 @@ void DataReaderServer::openSocket(int port) {
 
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(port);
+	address.sin_port = htons(_port);
 
-	if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+	if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
 		throw "Could not bind";
+		exit(-1);
+	}
 	if (listen(server_fd, 5) < 0) {
 		cout << "Could not listen, please be more quiet, CLI is terminated" << endl;
 		exit(1);

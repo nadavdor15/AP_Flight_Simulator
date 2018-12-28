@@ -37,8 +37,6 @@ void Modifier::updateSimulator(string varName) {
 		if (_varToPath->find(varName) != _varToPath->end()) {
 			string query = "set " + _varToPath->at(varName) + " " + to_string(_symbolTable->at(varName));
 			_connectCommand->sendMessage(query);
-		} else {
-			cout << "not in g"<< endl;
 		}
 	} catch (...) {
 		throw "Could not update simulator";

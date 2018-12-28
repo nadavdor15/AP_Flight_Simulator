@@ -13,6 +13,11 @@ AssignCommand::AssignCommand(map<string, double>* symbolTable,
 	_argumentsAmount = 2;
 }
 
+
+/*
+* doCommand -> 
+* assigns variable it's requested value. 
+*/
 int AssignCommand::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
 		throw "Arguments amount is lower than " + to_string(_argumentsAmount);

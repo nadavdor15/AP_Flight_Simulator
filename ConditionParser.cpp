@@ -66,9 +66,6 @@ bool ConditionParser::conditionIsTrue(vector<string>& arguments) {
 }
 
 void ConditionParser::runBlock(vector<string>& arguments) {
-	// cout << "block is " << endl;
-	// for (string s : arguments)
-	// 	cout << "\t" << s << endl;
 	_interpreter->parser(arguments, 0);
 }
 

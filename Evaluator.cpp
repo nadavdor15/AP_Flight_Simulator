@@ -9,11 +9,12 @@
 
 using namespace std;
 
+map<string, int> Evaluator::_precedenceMap =  {{"+", 0}, {"-", 0}, {"*", 1}, {"/", 1}};
+
 double Evaluator::evaluate(vector<string> arguments, unsigned int* index, map<string, double>* symbolTable) {
 	vector<string> postfix = toPostfix(arguments, index, symbolTable);
 	*index = lastIndex(arguments, index, symbolTable) + 1;
 	return calculatePostfix(postfix);
-	return 0;
 }
 
 vector<string> Evaluator::assignVars(vector<string> arguments,
@@ -23,19 +24,20 @@ vector<string> Evaluator::assignVars(vector<string> arguments,
 	map<string, int> operands(_precedenceMap);
 	operands[")"] = 0;
 	operands["("] = 0;
-	for (unsigned int i = indexCopy; i < arguments.size(); i++) {
+	unsigned int size = lastIndex(arguments, index, symbolTable);
+	for (unsigned int i = indexCopy; i <= size; i++) {
 		try {
 			stod(arguments[i]);
 		} catch (...) {
 			if (operands.find(arguments[i]) != operands.end())
 				continue;
-			if (StringHelper::startsWith(arguments[i], "\n")) {
-				arguments.erase(arguments.begin() + i);
-				continue;
-			}
+			// if (StringHelper::startsWith(arguments[i], "\n")) {
+			// 	arguments.erase(arguments.begin() + i);
+			// 	continue;
+			// }
 			if (symbolTable->find(arguments[i]) == symbolTable->end())
 				throw "The variable " + arguments[i] + " is not defined";
-			arguments[i] = to_string(symbolTable->operator[](arguments[i]));
+			arguments[i] = to_string(symbolTable->at(arguments[i]));
 		}
 	}
 	// if we have -NUMBER instead of 0-NUMBER, we add 0
@@ -76,7 +78,8 @@ vector<string> Evaluator::toPostfix(vector<string> arguments,
 	unsigned int assignedLastIndex = lastIndex(afterAssign, index, symbolTable) + 1;
 	stack<string> operands;
 	vector<string> postfix;
-	for (auto it = afterAssign.begin() + *index; it != afterAssign.begin() + assignedLastIndex; ++it) {
+	auto end = afterAssign.begin() + assignedLastIndex;
+	for (auto it = afterAssign.begin() + *index; it != end; ++it) {
 		string token = *it;
 		try {
 			stod(token);
@@ -94,14 +97,13 @@ vector<string> Evaluator::toPostfix(vector<string> arguments,
 			} else if (token == "(") {
 				operands.push(token);
 			} else {
-				if (operands.empty())
-					continue;
 				string top;
-				while ((top = operands.top()).compare("(") != 0) {
+				while (!operands.empty() && (top = operands.top()).compare("(") != 0) {
 					postfix.push_back(top);
 					operands.pop();
 				}
-				operands.pop();
+				if (!operands.empty())
+					operands.pop();
 			}
 		}
 	}
@@ -148,5 +150,3 @@ Number Evaluator::calculateNumber(string operant, Number leftNumber, Number righ
 	}
 	return Number(-1);
 }
-
-map<string, int> Evaluator::_precedenceMap =  {{"+", 0}, {"-", 0}, {"*", 1}, {"/", 1}};
