@@ -60,7 +60,7 @@ int ConnectCommand::doCommand(vector<string>& arguments, unsigned int index) {
 void ConnectCommand::sendMessage(const string message) {
 	char* msg = NULL;
 	while (msg == NULL)
-		msg = (char*) malloc((message.length() + 2)*sizeof(char));
+		msg = (char*) malloc((message.length() + 3)*sizeof(char));
 	strcpy(msg, message.c_str());
 	strcat(msg, "\r\n");
 	send(_client_fd, msg, strlen(msg), 0);
