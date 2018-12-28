@@ -17,6 +17,9 @@ double Evaluator::evaluate(vector<string> arguments, unsigned int* index, map<st
 	return calculatePostfix(postfix);
 }
 
+/*
+* assigns variables value by a given map. 
+* */
 vector<string> Evaluator::assignVars(vector<string> arguments,
 			   unsigned int* index,
 			   map<string, double>* symbolTable) {
@@ -53,6 +56,9 @@ vector<string> Evaluator::assignVars(vector<string> arguments,
 	return arguments;
 }
 
+/*
+* returns the last index of the expression.
+* */
 unsigned int Evaluator::lastIndex(vector<string> arguments,
 								  unsigned int* index,
 								  map<string, double>* symbolTable) {
@@ -61,6 +67,7 @@ unsigned int Evaluator::lastIndex(vector<string> arguments,
 	map<string, int> operands(_precedenceMap);
 	operands[")"] = 0;
 	operands["("] = 0;
+	// reads untill found two strings who aren't operands.
 	for (unsigned int i = *index; i < arguments.size() - 1; i++) {
 		firstIsOperand = (operands.find(arguments[i]) != operands.end());
 		secondIsOperand = (operands.find(arguments[i + 1]) != operands.end());
@@ -71,6 +78,9 @@ unsigned int Evaluator::lastIndex(vector<string> arguments,
 	return arguments.size() - 1;
 }
 
+/*
+* turns an infix vector to postfix.
+* */
 vector<string> Evaluator::toPostfix(vector<string> arguments,
 								   unsigned int* index,
 								   map<string, double>* symbolTable) {
@@ -114,6 +124,9 @@ vector<string> Evaluator::toPostfix(vector<string> arguments,
 	return postfix; 
 }
 
+/*
+* calculates a postfix vector representing mathematica expression.
+* */
 double Evaluator::calculatePostfix(vector<string> arguments) {
 	stack<Number> operands;
 	while (!arguments.empty()) {
@@ -134,6 +147,9 @@ double Evaluator::calculatePostfix(vector<string> arguments) {
 	return operands.top().calculate(arguments, 0);
 }
 
+/*
+* returns a number expression by activating the operand on two numbers.
+* */
 Number Evaluator::calculateNumber(string operant, Number leftNumber, Number rightNumber) {
 	vector<string> dummy;
 	if (operant.compare("+") == 0) {
