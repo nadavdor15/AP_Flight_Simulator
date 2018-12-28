@@ -26,6 +26,7 @@ void Modifier::setVariableValue(string var, double value) {
 			if (_symbolTable->find(neighbor) != _symbolTable->end()) {
 				if (_symbolTable->at(neighbor) != value) {
 					_symbolTable->at(neighbor) = value;
+					updateSimulator(neighbor);
 					changeNeighbors.push_back(neighbor);
 				}
 			} else {
