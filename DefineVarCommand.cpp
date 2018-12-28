@@ -13,6 +13,10 @@ DefineVarCommand::DefineVarCommand(map<string, double>* symbolTable, map<string,
 	_argumentsAmount = 1;
 }
 
+/*
+* doCommand ->
+* adds the variable to the variables map and sets it's value to nan (not a number).
+*/
 int DefineVarCommand::doCommand(vector<string>& arguments, unsigned int index) {
 	if ((arguments.size() - 1) < _argumentsAmount)
 		throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
@@ -28,6 +32,9 @@ int DefineVarCommand::doCommand(vector<string>& arguments, unsigned int index) {
 	return ++index;
 }
 
+/*
+* checks is variable's name is valid.
+* */
 void DefineVarCommand::checkValidity(string varName) {
 	if (isdigit(varName[0]))
 		throw "The name " + varName + " contains a digit for first char";
