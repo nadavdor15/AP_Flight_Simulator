@@ -20,6 +20,9 @@ public:
 		_argumentsAmount = 2;
 	}
 
+	/*
+	* opens a server that the simulator could connect to.
+	* */
 	virtual int doCommand(vector<string>& arguments, unsigned int index) {
 		if ((arguments.size() - 1) < _argumentsAmount)
 			throw "Amount of arguments is lower than " + to_string(_argumentsAmount);
