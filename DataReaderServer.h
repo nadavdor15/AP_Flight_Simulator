@@ -17,10 +17,21 @@ public:
 					 map<string, string>* pathToVar,
 					 map<string, vector<string>>* bindedVarTable,
 					 Modifier* modifier);
+	
+	
+	/*
+	* doCommand ->
+	* Opens a server on a different thread that the simulator connects to, and recieves messages from it
+	* at a given speed.
+	* */
 	virtual int doCommand(vector<string>& arguments, unsigned int index);
   virtual ~DataReaderServer();
 private:
-  void openSocket();
+	
+	/*
+	* opens a socket and waits for first signs from the simulator.
+	* */
+	void openSocket();
 	static void startServer(int new_socket,
             unsigned int speed,
 						map<string,double>* symbolTable,
